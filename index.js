@@ -1,8 +1,20 @@
+const { Client } = require('pg')
+
+const client = new Client({
+  connectionString: process.env.JAWSDB_URL,
+})
+client.connect()
+
 var express = require('express');
 var app = express();
 
 app.get('/', function (req, res) {
-  res.send(`${process.env.HELLO} ${process.env.WORLD}`);
+  client.query('SELECT NOW()').then((data) => {
+    res.send(data.rows[0]);
+  })
+  .catch(err => {
+    res.status(500).send('Something went wrong!')
+  })
 });
 
 app.listen(process.env.PORT || 3000, function () {
